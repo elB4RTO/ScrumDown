@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>ControlButton.qml</file>
+        <file>SettingsPanel.qml</file>
+        <file>TimerPanel.qml</file>
+        <file>icons/dark/back.png</file>
+        <file>icons/dark/pause.png</file>
+        <file>icons/dark/pin.png</file>
+        <file>icons/dark/play.png</file>
+        <file>icons/dark/reset.png</file>
+        <file>icons/dark/settings.png</file>
+        <file>icons/dark/stop.png</file>
+        <file>icons/light/back.png</file>
+        <file>icons/light/pause.png</file>
+        <file>icons/light/pin.png</file>
+        <file>icons/light/play.png</file>
+        <file>icons/light/reset.png</file>
+        <file>icons/light/settings.png</file>
+        <file>icons/light/stop.png</file>
+    </qresource>
+</RCC>
