@@ -1,5 +1,7 @@
 import QtQuick
 
+import scrumdown.utils
+
 Item {
     id: root
 
@@ -26,16 +28,11 @@ Item {
     }
 
     function startTimer() {
-        logic.resetCountdown()
-        logic.updateTime()
-        timer.start()
-    }
-
-    function pauseTimer() {
-        timer.stop()
-    }
-    function resumeTimer() {
-        timer.start()
+        if (logic.countdown !== 0) {
+            logic.resetCountdown()
+            logic.updateTime()
+            timer.start()
+        }
     }
 
     function stopTimer() {
@@ -79,7 +76,7 @@ Item {
 
             text: "00"
 
-            color: settings.colorText
+            color: logic.timerExpired ? settings.colorExpired : settings.colorText
 
             SequentialAnimation on color {
                 id: minStatic
@@ -137,7 +134,7 @@ Item {
 
             text: ":"
 
-            color: settings.colorText
+            color: logic.timerExpired ? settings.colorExpired : settings.colorText
 
             SequentialAnimation on color {
                 id: colStatic
@@ -195,7 +192,7 @@ Item {
 
             text: "00"
 
-            color: settings.colorText
+            color: logic.timerExpired ? settings.colorExpired : settings.colorText
 
             SequentialAnimation on color {
                 id: secStatic
@@ -290,15 +287,19 @@ Item {
         ]
     }
 
+    Ensemble {
+        id: ensemble
+    }
+
     QtObject {
         id: settings
 
         property int time: 180
 
-        readonly property color colorText: theme === "light" ? "#000000" : "#ffffff"
-        readonly property color colorExpiring: theme === "light" ? "#d60068" : "#ff2500"
-        readonly property color colorBlinking: theme === "light" ? "#ff3b28" : "#ff7f37"
-        readonly property color colorExpired: theme === "light" ? "#c4859e" : "#9e4f42"
+        readonly property color colorText: theme === "light" ? ensemble.theme.light_timer_text : ensemble.theme.dark_timer_text
+        readonly property color colorExpiring: theme === "light" ? ensemble.theme.light_timer_expiring : ensemble.theme.dark_timer_expiring
+        readonly property color colorBlinking: theme === "light" ? ensemble.theme.light_timer_blinking : ensemble.theme.dark_timer_blinking
+        readonly property color colorExpired: theme === "light" ? ensemble.theme.light_timer_expired : ensemble.theme.dark_timer_expired
 
         readonly property int durationStaticIn: 400
         readonly property int durationStaticOut: 850

@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import scrumdown.utils
+
 Item {
     id: root
 
@@ -55,9 +57,9 @@ Item {
                     bottomLeftRadius: data.radius
                     border {
                         width: data.borderWidth
-                        color: "#373737"
+                        color: ensemble.theme.dark_background
                     }
-                    color: "#e5e5e5"
+                    color: ensemble.theme.light_background
                 }
 
                 onPressed: root.themeSelected("light")
@@ -79,9 +81,9 @@ Item {
                     bottomRightRadius: data.radius
                     border {
                         width: data.borderWidth
-                        color: "#e5e5e5"
+                        color: ensemble.theme.light_background
                     }
-                    color: "#373737"
+                    color: ensemble.theme.dark_background
                 }
 
                 onPressed: root.themeSelected("dark")
@@ -140,6 +142,7 @@ Item {
 
                 horizontalAlignment: TextInput.AlignRight
 
+                topPadding: ensemble.settings.timer_top_padding * root.scaleFactor
                 rightPadding: 10 * root.scaleFactor
 
                 inputMask: "00"
@@ -194,6 +197,7 @@ Item {
 
                 horizontalAlignment: TextInput.AlignLeft
 
+                topPadding: ensemble.settings.timer_top_padding * root.scaleFactor
                 leftPadding: 10 * root.scaleFactor
 
                 inputMask: "00"
@@ -213,14 +217,18 @@ Item {
         }
     }
 
+    Ensemble {
+        id: ensemble
+    }
+
     QtObject {
         id: data
 
-        readonly property color digitsColor: theme === "light" ? "#373737" : "#e5e5e5"
-        readonly property color digitsBackground: theme === "light" ? "#d4d4d4" : "#484848"
+        readonly property color digitsColor: theme === "light" ? ensemble.theme.light_text : ensemble.theme.dark_text
+        readonly property color digitsBackground: theme === "light" ? ensemble.theme.light_background_alt : ensemble.theme.dark_background_alt
 
         readonly property int radius: themeBox.width / 4
-        readonly property int borderWidth: Math.max(1, Math.min(10, root.height / 50 * root.scaleFactor))
+        readonly property int borderWidth: Math.max(1, Math.min(ensemble.settings.themes_border_width, root.height / 50 * root.scaleFactor))
         readonly property int textSize: 40 * root.scaleFactor
     }
 

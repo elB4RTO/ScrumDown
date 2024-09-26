@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 
+import scrumdown.utils
+
 Item {
     id: root
 
@@ -32,11 +34,15 @@ Item {
             radius: root.width / 2
             border {
                 width: Math.max(1, Math.min(10, root.width / 30 * root.scaleFactor))
-                color: root.showBorder ? "#00b5ff" : "transparent"
+                color: root.showBorder ? ensemble.theme.pin_border : "transparent"
             }
             color: root.theme === "light"
-                    ? button.down ? "#cdcdcd" : button.hovered ? "#d4d4d4" : "#dbdbdb"
-                    : button.down ? "#565656" : button.hovered ? "#484848" : "#404040"
+                    ? button.down ? ensemble.theme.light_button_down
+                                  : button.hovered ? ensemble.theme.light_button_hovered
+                                                   : ensemble.theme.light_button_static
+                    : button.down ? ensemble.theme.dark_button_down
+                                  : button.hovered ? ensemble.theme.dark_button_hovered
+                                                   : ensemble.theme.dark_button_static
         }
 
         onPressed: root.pressed()
@@ -53,5 +59,9 @@ Item {
         fillMode: Image.PreserveAspectFit
 
         source: root.iconSource
+    }
+
+    Ensemble {
+        id: ensemble
     }
 }

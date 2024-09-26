@@ -2,7 +2,7 @@
 #include <QQmlApplicationEngine>
 
 #include "configs_manager.h"
-
+#include "ensemble.h"
 
 int main(int argc, char * argv[])
 {
@@ -14,6 +14,7 @@ int main(int argc, char * argv[])
 
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     qmlRegisterType<ConfigsManager>("scrumdown.utils", 1, 0, "ConfigsManager");
+    qmlRegisterType<Ensemble>("scrumdown.utils", 1, 0, "Ensemble");
 
     auto exitOnCreationFailure{[url]
         (QObject *obj, const QUrl &objUrl)
@@ -32,3 +33,4 @@ int main(int argc, char * argv[])
 
     return app.exec();
 }
+

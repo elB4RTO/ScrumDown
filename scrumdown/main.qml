@@ -15,7 +15,7 @@ Window {
 
     title: qsTr("Timer")
 
-    color: theme === "light" ? "#e5e5e5" : "#373737"
+    color: theme === "light" ? ensemble.theme.light_background : ensemble.theme.dark_background
 
     readonly property real scaleFactor: Math.min(width/300, height/200)
 
@@ -264,6 +264,10 @@ Window {
                 logic.real_height = window.height
             }
         }
+    }
+
+    Ensemble {
+        id: ensemble
     }
 
     ConfigsManager {
