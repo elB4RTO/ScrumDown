@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=ScrumDown
+GenericName=ScrumDown
+Comment=A simple count-down timer to track the time of scrum sessions
+Icon=/.local/share/ScrumDown/ScrumDown.png
+Exec=scrumdown
+Categories=Utility;
+Keywords=scrumdown;scrum;timer;

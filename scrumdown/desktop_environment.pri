@@ -1,0 +1,28 @@
+
+DESKTOP_ENVIRONMENT = "$$(DESKTOP_ENVIRONMENT)"
+
+!isEmpty(DESKTOP_ENVIRONMENT) {
+
+    message("Desktop Environment: $$DESKTOP_ENVIRONMENT")
+
+    DESKTOP_ENVIRONMENT_VALUE = 45 # '-'
+
+    equals(DESKTOP_ENVIRONMENT, "gnome") {
+        DESKTOP_ENVIRONMENT_VALUE = 103 # 'g'
+    }
+
+    equals(DESKTOP_ENVIRONMENT, "kde") {
+        DESKTOP_ENVIRONMENT_VALUE = 107 # 'k'
+    }
+
+    equals(DESKTOP_ENVIRONMENT, "lxqt") {
+        DESKTOP_ENVIRONMENT_VALUE = 108 # 'l'
+    }
+
+    equals(DESKTOP_ENVIRONMENT, "windows") {
+        DESKTOP_ENVIRONMENT_VALUE = 119 # 'w'
+    }
+
+    DEFINES += DESKTOP_ENVIRONMENT=$$DESKTOP_ENVIRONMENT_VALUE
+}
+
