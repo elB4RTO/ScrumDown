@@ -45,6 +45,8 @@ Item {
                                                    : ensemble.theme.dark_button_static
         }
 
+        flat: true
+
         onPressed: root.pressed()
     }
 

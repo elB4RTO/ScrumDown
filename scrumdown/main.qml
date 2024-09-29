@@ -230,6 +230,15 @@ Window {
         property int real_width: 300
         property int real_height: 200
 
+        function updateValues() {
+            if (window.visibility === Qt.WindowMaximized) {
+                logic.real_x = window.x
+                logic.real_y = window.y
+                logic.real_width = window.width
+                logic.real_height = window.height
+            }
+        }
+
         function togglePinMode() {
             window.flags ^= Qt.WindowStaysOnTopHint
             pin.showBorder ^= true
@@ -245,25 +254,23 @@ Window {
         target: window
 
         function onXChanged() {
-            if (window.visibility === Qt.WindowMaximized) {
-                logic.real_x = window.x
-            }
+            geometryTimer.restart()
         }
         function onYChanged() {
-            if (window.visibility === Qt.WindowMaximized) {
-                logic.real_y = window.y
-            }
+            geometryTimer.restart()
         }
         function onWidthChanged() {
-            if (window.visibility === Qt.WindowMaximized) {
-                logic.real_width = window.width
-            }
+            geometryTimer.restart()
         }
         function onHeightChanged() {
-            if (window.visibility === Qt.WindowMaximized) {
-                logic.real_height = window.height
-            }
+            geometryTimer.restart()
         }
+    }
+
+    Timer { // trick to properly handle geometry events on all systems (:coff: ... Windows ... :coff:)
+        id: geometryTimer
+        interval: 1000
+        onTriggered: logic.updateValues()
     }
 
     Ensemble {
@@ -287,6 +294,7 @@ Window {
             window.theme = configsManager.getTheme()
             timerPanel.setTime(configsManager.getTime())
         }
+        logic.updateValues() // needed to properly initialize values on all systems (:coff: ... Windows ... :coff:)
         timerPanel.resetTimer()
         const time = timerPanel.getTime()
         const mins = Math.floor(time / 60)

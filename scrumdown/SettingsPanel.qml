@@ -62,6 +62,8 @@ Item {
                     color: ensemble.theme.light_background
                 }
 
+                flat: true
+
                 onPressed: root.themeSelected("light")
             }
 
@@ -85,6 +87,8 @@ Item {
                     }
                     color: ensemble.theme.dark_background
                 }
+
+                flat: true
 
                 onPressed: root.themeSelected("dark")
             }
