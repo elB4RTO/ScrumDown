@@ -1,0 +1,80 @@
+name: Windows
+
+on:
+  release:
+    types: [published]
+
+env:
+  QT_VERSION: '6.7.2'
+  BUILD_TYPE: 'Release'
+  SOURCE_DIR: "${{github.workspace}}/scrumdown"
+  BUILD_DIR: "${{github.workspace}}/build"
+  RELEASE_DIR: "${{github.workspace}}/release"
+  TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+  build:
+    runs-on: 'windows-latest'
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { desktop_environment: 'windows' }
+
+    steps:
+    - name: Get LogDoctor
+      uses: actions/checkout@v4
+
+    
+    - name: Install Qt6
+      uses: jurplel/install-qt-action@v4
+      with:
+        target: 'desktop'
+        arch: 'win64_msvc2019_64'
+        version: '${{env.QT_VERSION}}'
+        archives: 'icu qtbase qttools qtquickcontrols'
+        tools: 'tools_ifw tools_cmake tools_qtcreator,qt.tools.qtcreator'
+        install-deps: 'true'
+
+    
+    - name: Get MSVC
+      uses: ilammy/msvc-dev-cmd@v1.13.0
+    
+    
+    - name: Append PATHs
+      uses: myci-actions/export-env-var-powershell@1
+      with:
+        name: PATH
+        value: $env:PATH;D:/a/ScrumDown/Qt/Tools/QtCreator/bin/jom
+
+
+    - name: Prepare
+      run: |
+        mkdir "${{env.BUILD_DIR}}"
+        mkdir "${{env.RELEASE_DIR}}"
+
+
+    - name: Build
+      working-directory: ${{env.BUILD_DIR}}
+      run: |
+        DESKTOP_ENVIRONMENT=${{matrix.config.desktop_environment}}
+        qmake6 ${{env.SOURCE_DIR}} -config release
+        jom
+
+
+    - name: Prepare deployment
+      working-directory: ${{env.RELEASE_DIR}}
+      run: |
+        VERSION="${{env.TAG}}"
+        mv "${{env.BUILD_DIR}}/ScrumDown.exe" "${{env.RELEASE_DIR}}/"
+        echo "RELEASE_NAME=ScrumDown-${VERSION:1}-amd64_windows" >> $GITHUB_ENV
+
+    - name: Deploy
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{env.RELEASE_NAME}}
+        path: ${{env.RELEASE_DIR}}
+        if-no-files-found: error
+        compression-level: 9
+        retention-days: 7
+
