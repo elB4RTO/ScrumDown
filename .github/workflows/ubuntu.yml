@@ -1,0 +1,82 @@
+name: Ubuntu
+
+on:
+  release:
+    types: [published]
+
+env:
+  QT_VERSION: '6.7.2'
+  BUILD_TYPE: 'Release'
+  SOURCE_DIR: "${{github.workspace}}/scrumdown"
+  BUILD_DIR: "${{github.workspace}}/build"
+  RELEASE_DIR: "${{github.workspace}}/release"
+  TAG: ${{ github.event.release.tag_name }}
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { desktop_environment: ''      }
+          - { desktop_environment: 'gnome' }
+          - { desktop_environment: 'kde'   }
+          - { desktop_environment: 'lxqt'  }
+
+    steps:
+    - name: Get ScrumDown
+      uses: actions/checkout@v4
+
+
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v4
+      with:
+        target: 'desktop'
+        arch: 'gcc_64'
+        version: '${{env.QT_VERSION}}'
+        archives: 'icu qtbase qttools qtquickcontrols'
+        tools: 'tools_ifw tools_cmake tools_qtcreator,qt.tools.qtcreator'
+        install-deps: 'true'
+
+
+    - name: Update GCC
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+        sudo apt-get update
+        sudo apt-get install -y g++-13 gcc-13
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 60 --slave /usr/bin/g++ g++ /usr/bin/g++-13
+
+
+    - name: Prepare
+      run: |
+        mkdir "${{env.BUILD_DIR}}"
+        mkdir "${{env.RELEASE_DIR}}"
+
+
+    - name: Build
+      working-directory: ${{env.BUILD_DIR}}
+      run: |
+        DESKTOP_ENVIRONMENT=${{matrix.config.desktop_environment}}
+        qmake6 ${{env.SOURCE_DIR}} -config release
+        make -j16
+
+
+    - name: Prepare deployment
+      working-directory: ${{env.RELEASE_DIR}}
+      run: |
+        VERSION="${{env.TAG}}"
+        mv "${{env.BUILD_DIR}}/ScrumDown" "${{env.RELEASE_DIR}}/"
+        DESKTOP_ENVIRONMENT=${{matrix.config.desktop_environment}}
+        [ -n ${DESKTOP_ENVIRONMENT} ] && DESKTOP_ENVIRONMENT="-${DESKTOP_ENVIRONMENT}"
+        echo "RELEASE_NAME=ScrumDown-${VERSION:1}${DESKTOP_ENVIRONMENT}-amd64_linux" >> $GITHUB_ENV
+      
+    - name: Deploy
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{env.RELEASE_NAME}}
+        path: ${{env.RELEASE_DIR}}
+        if-no-files-found: error
+        compression-level: 9
+        retention-days: 7
+
