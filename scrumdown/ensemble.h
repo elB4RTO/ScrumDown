@@ -6,6 +6,7 @@
 
 #define GNOME   'g'
 #define KDE     'k'
+#define LXQT    'l'
 #define WINDOWS 'w'
 
 class Theme
@@ -90,6 +91,12 @@ private:
 #elif DESKTOP_ENVIRONMENT == KDE
     const int _themes_border_width{8};
     const int _timer_top_padding{0};
+#elif DESKTOP_ENVIRONMENT == LXQT
+    const int _themes_border_width{6};
+    const int _timer_top_padding{8};
+#elif DESKTOP_ENVIRONMENT == WINDOWS
+    const int _themes_border_width{6};
+    const int _timer_top_padding{-1};
 #else
     static_assert(false, "Unsupported DesktopEnvironment");
 #endif
